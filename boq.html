@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Matrix</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      /*width: 100%;*/
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      table-layout: auto;
+    }
+
+    th,
+    td {
+      border: 1px solid #000;
+      padding: 4px 6px;
+    }
+
+    th {
+      background: #eee;
+    }
+
+    .sep td {
+      text-align: center;
+    }
+  </style>
+
+
+</head>
+
+<body>
+
+  <table>
+    <thead>
+      <tr>
+        <th colspan="11">BILL OF QUANTITIES</th>
+      </tr>
+      <th>ITEM</th>
+      <th>CODE</th>
+      <th>PART</th>
+      <th>DESCRIPTION</th>
+      <th>UNIT PRICE</th>
+      <th>UNIT WEIGHT</th>
+      <th>UNIT HOURS</th>
+      <th>QTY</th>
+      <th>TOTAL PRICE</th>
+      <th>TOTAL WEIGHT</th>
+      <th>TOTAL HOURS</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+  <script src="boq-codes.js"></script>
+  <script src="parts-list.js"></script>
+
+  <script>
+
+    let markup = 0
+    let subtotal = 0
+    let warrrantyprice = 0
+    let sellingprice = 0
+    let listprice = 0
+
+    const rows = [
+      { id: "C01", name: "CORES" },
+      { id: "C02", name: "ENCLOSURE-MAIN" },
+      { id: "C03", name: "ENCLOSURE-BASE" },
+      { id: "C04", name: "ENCLOSURE-ROOF" },
+      { id: "C05", name: "ENCLOSURE-HOODS" },
+      { id: "C06", name: "ENCLOSURE-MODULE SPLIT" },
+      { id: "C07", name: "OA DAMPER" },
+      { id: "C08", name: "EA DAMPER" },
+      { id: "C09", name: "BYPASS DAMPER" },
+      { id: "C10", name: "FANS - SA" },
+      { id: "C11", name: "FANS - EA" },
+      { id: "C12", name: "MAGNEHELIC GAGE ENCLOSURE" },
+      { id: "C13", name: "MAGNEHELIC GAGE" },
+      { id: "C14", name: "FILTERS - OA #1" },
+      { id: "C15", name: "FILTERS - OA #2" },
+      { id: "C16", name: "FILTERS - EA #1" },
+      { id: "C17", name: "FILTERS - EA #2" },
+      { id: "C18", name: "PRE-HEATER" },
+      { id: "C19", name: "POST-HEATER" },
+      { id: "C20", name: "DISCONNECT" },
+      { id: "C21", name: "MAIN FUSES" },
+      { id: "C22", name: "POWER DISTRIBUTION BLOCK" },
+      { id: "C23", name: "FAN FUSE BLOCK" },
+      { id: "C24", name: "ELECTRICAL PANEL" },
+      { id: "C25", name: "DOOR SWITCHES" },
+      { id: "C26", name: "MAIN CONTROLLER" },
+      { id: "C27", name: "TEMPERATURE SENSOR" },
+      { id: "C28", name: "TEMP & HUMIDITY SENSOR" },
+      { id: "C29", name: "FAN CURRENT SWITCH" },
+      { id: "C30", name: "EXPANSION BOARD" },
+      { id: "C31", name: "FAN AIRFLOW MONITORS" },
+      { id: "C32", name: "DUCT PRESSURE TRANSDUCER - SUPPLY" },
+      { id: "C33", name: "DUCT PRESSURE TRANSDUCER - RETURN" },
+      { id: "C34", name: "FILTER SWITCHES"  },
+      { id: "C35", name: "POTENTIOMETER" },
+      { id: "C36", name: "OCCUPANCY TIMER"  },
+      { id: "C37", name: "DEFROST SWITCH - STOP SUPPLY FAN" },
+      { id: "C38", name: "PREHEAT CONTROL"},
+      { id: "C39", name: "TOTAL MATERIAL COST" },
+      { id: "C40", name: "LABOR HOURS TOTAL" },
+      { id: "C41", name: "SUBTOTAL" },
+      { id: "C42", name: "MARKUP" },
+      { id: "C43", name: "WARRANTY" },
+      { id: "C44", name: "SELLING PRICE" },
+      { id: "C45", name: "LIST PRICE" },
+      { id: "C46", name: "FREIGHT" },
+    ];
+
+    const tbody = document.getElementById("table-body");
+
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+    <td>${r.name}</td>
+    <td id="${r.id}-CODE"></td>
+    <td id="${r.id}-PART"></td>
+    <td id="${r.id}-DESCRIPTION"></td>
+    <td id="${r.id}-UNIT_PRICE"></td>
+    <td id="${r.id}-UNIT_WEIGHT"></td>
+    <td id="${r.id}-UNIT_HOURS"></td>
+    <td id="${r.id}-QTY"></td>
+    <td id="${r.id}-TOTAL_PRICE"></td>
+    <td id="${r.id}-TOTAL_WEIGHT"></td>
+    <td id="${r.id}-TOTAL_HOURS"></td>
+  `;
+
+      tbody.appendChild(tr);
+    });
+
+    function mergeCellsHorizontal(mainCellId, cellsToRemoveIds) {
+      const mainCell = document.getElementById(mainCellId);
+
+      // Increase colspan
+      mainCell.colSpan = 1 + cellsToRemoveIds.length;
+
+      // Remove the other cells
+      cellsToRemoveIds.forEach(id => {
+        const cell = document.getElementById(id);
+        if (cell) cell.remove();
+      });
+    }
+
+    mergeCellsHorizontal("C39-CODE", ["C39-PART", "C39-DESCRIPTION", "C39-UNIT_PRICE", "C39-UNIT_WEIGHT", "C39-UNIT_HOURS", "C39-QTY"]);
+    mergeCellsHorizontal("C39-TOTAL_WEIGHT", ["C39-TOTAL_HOURS"]);
+    //mergeCellsHorizontal("C40-PART", ["C40-DESCRIPTION"]);
+
+
+    updateboq()
+
+
+    function updateboq() {
+      for (let i = 1; i <= 38; i++) {
+        const prefix = "C" + i.toString().padStart(2, "0"); // C01, C02, ... C46
+        updateRow(prefix);
+      };
+      sumHours()
+      sumPrices()
+      updatesubtotal()
+      updatemarkupprice()
+      updatewarranty()
+      updatesellingprice()
+      updatelistprice()
+      updatefreightprice()
+    }
+
+    function updateRow(prefix) {
+      let code = document.getElementById(prefix + "-CODE").textContent;
+      let part = "-";
+      let qty = 0;
+      qty = codes[code]?.qty ?? 0;
+      if (code.includes(":")) {
+        let originalCode = code;
+        code = code.split(":")[0];
+        qty = Number(originalCode.split(":")[1]);
+      }
+if(prefix === "C23" || prefix === "C29"){
+  let fansaqty = Number(document.getElementById("C10-QTY").textContent)
+  let faneaqty = Number(document.getElementById("C11-QTY").textContent)
+qty = fansaqty + faneaqty
+}
+
+
+      part = codes[code]?.part ?? "-";
+
+
+      let description, unitPrice, unitWeight, unitHours;
+      if (part === "-") {
+        description = "-";
+        unitPrice = 0;
+        unitWeight = 0;
+        unitHours = 0;
+      } else {
+        description = parts[part].description;
+        unitPrice = Number(parts[part].price);
+        unitWeight = Number(parts[part].weight);
+        unitHours = Number(parts[part].hours);
+      }
+
+      document.getElementById(prefix + "-PART").textContent = part;
+      document.getElementById(prefix + "-DESCRIPTION").textContent = description;
+      document.getElementById(prefix + "-UNIT_PRICE").textContent = unitPrice;
+      document.getElementById(prefix + "-UNIT_WEIGHT").textContent = unitWeight;
+      document.getElementById(prefix + "-UNIT_HOURS").textContent = unitHours;
+      document.getElementById(prefix + "-QTY").textContent = qty;
+      document.getElementById(prefix + "-TOTAL_PRICE").textContent = (unitPrice * qty).toFixed(2);
+      document.getElementById(prefix + "-TOTAL_WEIGHT").textContent = (unitWeight * qty).toFixed(2);
+      document.getElementById(prefix + "-TOTAL_HOURS").textContent = (unitHours * qty).toFixed(2);
+
+
+
+
+    }
+
+
+    function sumPrices() {
+      let total = 0;
+
+      for (let i = 1; i <= 38; i++) {
+        const id = `C${String(i).padStart(2, '0')}-TOTAL_PRICE`;
+        const cell = document.getElementById(id);
+
+        if (cell && cell.textContent.trim() !== "") {
+          const value = parseFloat(cell.textContent);
+          if (!isNaN(value)) {
+            total += value;
+          }
+        }
+      }
+
+      document.getElementById("C39-TOTAL_PRICE").textContent = total.toFixed(2);
+    }
+
+    function sumHours() {
+      let total = 0;
+
+      for (let i = 1; i <= 38; i++) {
+        const id = `C${String(i).padStart(2, '0')}-TOTAL_HOURS`;
+        const cell = document.getElementById(id);
+
+        if (cell && cell.textContent.trim() !== "") {
+          const value = parseFloat(cell.textContent);
+          if (!isNaN(value)) {
+            total += value;
+          }
+        }
+      }
+
+      //document.getElementById("C40-QTY").textContent = total.toFixed(2);
+      let e40laborhourscode = "C40:" + total.toFixed(2);
+      document.getElementById("C40-CODE").textContent = e40laborhourscode
+      //updateRow("C40")
+      updateRow("C40")
+    }
+
+    function updatesubtotal() {
+      let materialCost = parseFloat(document.getElementById("C39-TOTAL_PRICE").textContent);
+      let laborCost = parseFloat(document.getElementById("C40-TOTAL_PRICE").textContent)
+      subtotal = materialCost + laborCost;
+      document.getElementById("C41-DESCRIPTION").textContent = "MATERIAL COST + LABOR COST";
+      document.getElementById("C41-TOTAL_PRICE").textContent = subtotal.toFixed(2);
+    }
+
+    function updatemarkupprice() {
+
+      let c42markupcode = document.getElementById("C42-CODE").textContent;
+      let markupfactor = Number(c42markupcode.split(":")[1]).toFixed(2)
+      let percentmarkup = (markupfactor * 100).toFixed(0);
+
+      markup = subtotal * markupfactor;
+
+      document.getElementById("C42-DESCRIPTION").textContent = "SUBTOTAL x %" + percentmarkup;
+      document.getElementById("C42-UNIT_PRICE").textContent = document.getElementById("C41-TOTAL_PRICE").textContent;
+      document.getElementById("C42-QTY").textContent = markupfactor;
+      document.getElementById("C42-TOTAL_PRICE").textContent = markup.toFixed(2);
+    }
+
+    function updatewarranty() {
+      let markupplusesubtotal = subtotal + markup;
+      warrrantyprice = markupplusesubtotal * 0.02;
+
+
+      document.getElementById("C43-DESCRIPTION").textContent = "(SUBTOTAL + MARKUP) x %2";
+      document.getElementById("C43-UNIT_PRICE").textContent = markupplusesubtotal.toFixed(2);
+      document.getElementById("C43-QTY").textContent = "0.02";
+      document.getElementById("C43-TOTAL_PRICE").textContent = warrrantyprice.toFixed(2);
+    }
+
+    function updatesellingprice() {
+      sellingprice = warrrantyprice + subtotal + markup;
+      document.getElementById("C44-DESCRIPTION").textContent = "(SUBTOTAL + MARKUP + WARRANTY)";
+      document.getElementById("C44-UNIT_PRICE").textContent = "";
+      document.getElementById("C44-QTY").textContent = "";
+      document.getElementById("C44-TOTAL_PRICE").textContent = sellingprice.toFixed(2);
+    }
+        function updatelistprice() {
+      listprice = sellingprice / 0.6;
+      document.getElementById("C45-DESCRIPTION").textContent = "(SELLING PRICE / 0.6)";
+      document.getElementById("C45-UNIT_PRICE").textContent = "";
+      document.getElementById("C45-QTY").textContent = "";
+      document.getElementById("C45-TOTAL_PRICE").textContent = listprice.toFixed(2);
+    }
+
+    function updatefreightprice() {
+      let code = getcode("C46");
+      let part = getpart(code);
+      let description = getdescription(part);
+      let qty = getunitprice(part);
+
+      document.getElementById("C46-PART").textContent = part;
+      document.getElementById("C46-DESCRIPTION").textContent = description;
+      document.getElementById("C46-UNIT_PRICE").textContent = listprice.toFixed(2);
+      document.getElementById("C46-QTY").textContent = qty;
+      document.getElementById("C46-TOTAL_PRICE").textContent = (listprice * qty).toFixed(2);
+    }
+
+    function getcode(prefix){
+      let code = document.getElementById(prefix + "-CODE").textContent;
+      return code
+    }
+
+    function getpart(code){       
+      return codes[code]?.part ?? "-";
+    }
+
+    function getdescription(part){
+      return parts[part]?.description ?? "-";      
+    }
+
+    function getunitprice(part){
+      return Number(parts[part]?.price ?? 0);
+    }
+
+
+
+    // THIS is what input.html will call
+    function setMatrixValue(id, value) {
+      console.log("setMatrixValue called with id:", id, "value:", value);
+      const cell = document.getElementById(id);
+      if (cell) {
+        cell.textContent = value;
+        console.log("Updated cell", id, "to", value);
+      } else {
+        console.log("Cell not found:", id);
+      }
+    }
+
+    // expose function to parent page
+    window.setMatrixValue = setMatrixValue;
+
+
+
+  </script>

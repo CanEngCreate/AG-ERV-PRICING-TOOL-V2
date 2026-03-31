@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ERV Pricing Tool v2</title>
+  <style>
+    .title {
+      padding: 20px;
+      background-color: #f5f5f5;
+      border-bottom: 2px solid #ccc;
+      font-size: 24px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="title">ERV Pricing Tool v2</div>
+
+  <!-- reference input frame height="1100" width="400"-->
+  <!-- reference matrix1 frame height="800" width="2000" regular matrix1 frame height="1100" width="300"-->
+  <!-- reference matrix2 frame height="650" width="2000"regular matrix2 frame height="1100" width="300"---->
+  <!-- reference boq frame height="1000" width="2000"-->
+
+  <iframe id="inputFrame" align="left" src="./input.html" height="1100" width="400" style="border:none;"
+    scrolling="no"></iframe>
+
+  <iframe id="boqFrame" align="top" src="./boq.html" height="1100" width="1200" style="border:none;"
+    scrolling="yes"></iframe>
+
+  <iframe id="matrix1Frame" src="./matrix1.html" height="800" width="2000" style="border:none;"
+    scrolling="yes"></iframe>
+
+  <iframe id="matrix2Frame" src="./matrix2.html" height="800" width="2000" style="border:none;"
+    scrolling="yes"></iframe>
+
+</body>
+
+<script>
+
+  function sendInputsToMatrix() {
+    const inputFrame = document.querySelector('iframe[src="./input.html"]');
+    const matrix1Frame = document.getElementById("matrix1Frame");
+    const matrix2Frame = document.getElementById("matrix2Frame");
+    const boqFrame = document.getElementById("boqFrame");
+
+    // Get matrix values from input iframe 
+    const d = inputFrame.contentWindow.getMatrixValues();
+    // Send to matrix iframe
+    matrix1Frame.contentWindow.setMatrixValue("1-SERIES", d.val1);
+    matrix1Frame.contentWindow.setMatrixValue("2-CORES1", d.val2);
+    matrix1Frame.contentWindow.setMatrixValue("3-CORES2", d.val3);
+    matrix1Frame.contentWindow.setMatrixValue("4-LOCATION", d.val4);
+    matrix1Frame.contentWindow.setMatrixValue("5-FANS", d.val5);
+    matrix1Frame.contentWindow.setMatrixValue("6-HEIGHT", d.val6);
+    matrix1Frame.contentWindow.setMatrixValue("7-INLET_WIDTH", d.val7);
+    matrix1Frame.contentWindow.setMatrixValue("8-VOLTAGE", d.val8);
+    matrix1Frame.contentWindow.setMatrixValue("9-FILTER_LOCATION", d.val9);
+    matrix1Frame.contentWindow.setMatrixValue("10-DUCT_OA", d.val10);
+    matrix1Frame.contentWindow.setMatrixValue("11-DUCT_SA", d.val11);
+    matrix1Frame.contentWindow.setMatrixValue("12-DUCT_RA", d.val12);
+    matrix1Frame.contentWindow.setMatrixValue("13-DUCT_EA", d.val13);
+    matrix1Frame.contentWindow.setMatrixValue("14-ELECTRICAL_CONNECTION", d.val14);
+    matrix1Frame.contentWindow.setMatrixValue("15-DAMPER_OA", d.val15);
+    matrix1Frame.contentWindow.setMatrixValue("16-DAMPER_EA", d.val16);
+    matrix1Frame.contentWindow.setMatrixValue("17-OPTION_DISCONNECT", d.val17);
+    matrix1Frame.contentWindow.setMatrixValue("181-OPTION_FROST_PROTECTION_SF", d.val181);
+    matrix1Frame.contentWindow.setMatrixValue("182-OPTION_FROST_PROTECTION_BP", d.val182);
+    matrix1Frame.contentWindow.setMatrixValue("19-OPTION_TIMER", d.val19);
+    matrix1Frame.contentWindow.setMatrixValue("20-OPTION_DIRTY_FILTER", d.val20);
+    matrix1Frame.contentWindow.setMatrixValue("21-OPTION_MAGNEHELIC", d.val21);
+    matrix1Frame.contentWindow.setMatrixValue("22-OPTION_BASERAIL", d.val22);
+    matrix1Frame.contentWindow.setMatrixValue("23-OPTION_SPARE_FILTERS", d.val23);
+    matrix1Frame.contentWindow.setMatrixValue("241-OPTION_MODULAR_SPLIT", d.val241);
+    matrix1Frame.contentWindow.setMatrixValue("242-OPTION_ROOF_CURB", d.val242);
+    matrix1Frame.contentWindow.setMatrixValue("243-OPTION_FILTERS", d.val243);
+    matrix1Frame.contentWindow.setMatrixValue("244-OPTION_BYPASS_DAMPER", d.val244);
+    matrix1Frame.contentWindow.setMatrixValue("245-OPTION_SPECIAL", d.val245);
+    matrix1Frame.contentWindow.setMatrixValue("25-COILS_PREHEAT", d.val25);
+    matrix1Frame.contentWindow.setMatrixValue("26-COILS_POSTHEAT", d.val26);
+    matrix1Frame.contentWindow.setMatrixValue("27-COILS_OTHER", d.val27);
+    matrix1Frame.contentWindow.setMatrixValue("281-CONTROLS", d.val281);
+    matrix1Frame.contentWindow.setMatrixValue("282-POTENTIOMETER", d.val282);
+
+    matrix2Frame.contentWindow.setMatrixValue("123-SERIES_SELECTION", d.val123);
+    matrix2Frame.contentWindow.setMatrixValue("99-AURA_SCHEDULAR", d.val99);
+    matrix2Frame.contentWindow.setMatrixValue("98-AURA_STANDARD_SPEED_CONTROL", d.val98);
+    matrix2Frame.contentWindow.setMatrixValue("97-AURA_ADVANCED_SPEED_CONTROL", d.val97);
+    matrix2Frame.contentWindow.setMatrixValue("96-SUPPLY_DUCT_DPT", d.val96);
+    matrix2Frame.contentWindow.setMatrixValue("95-RETURN_DUCT_DPT", d.val95);
+    matrix2Frame.contentWindow.setMatrixValue("94-MARKUP", d.val94);
+    matrix2Frame.contentWindow.setMatrixValue("93-FREIGHT", d.val93);
+    matrix2Frame.contentWindow.setMatrixValue("92-ENCLOSURE_BASE", d.val92);
+    matrix2Frame.contentWindow.setMatrixValue("91-UNIT_VOLTAGE", d.val91);
+    matrix2Frame.contentWindow.setMatrixValue("90-UNIT_PHASE", d.val90);
+    matrix2Frame.contentWindow.setMatrixValue("89-AMP_FACTOR", d.val89);
+    matrix2Frame.contentWindow.setMatrixValue("88-PRE_HEAT", d.val88);
+    matrix2Frame.contentWindow.setMatrixValue("87-POST_HEAT", d.val87);
+    matrix2Frame.contentWindow.setMatrixValue("86-CONTROLS", d.val86);
+    matrix2Frame.contentWindow.setMatrixValue("85-FAN_FLA", d.val85);
+    matrix2Frame.contentWindow.setMatrixValue("84-TOTAL_FAN_FLA", d.val84);
+    matrix2Frame.contentWindow.setMatrixValue("83-CONTROLS_FLA", d.val83);
+    matrix2Frame.contentWindow.setMatrixValue("82-FANS_CONTROLS_MCA_CONTRIBUTION", d.val82);
+    matrix2Frame.contentWindow.setMatrixValue("81-PRE_HEAT_FLA", d.val81);
+    matrix2Frame.contentWindow.setMatrixValue("80-POST_HEAT_FLA", d.val80);
+    matrix2Frame.contentWindow.setMatrixValue("79-UNIT_FLA", d.val79);
+    matrix2Frame.contentWindow.setMatrixValue("78-MIN_MAIN_DISCONNECT_SIZE", d.val78);
+    matrix2Frame.contentWindow.setMatrixValue("77-UNIT_MCA", d.val77);
+    matrix2Frame.contentWindow.setMatrixValue("76-UNIT_MOP_UNROUNDED", d.val76);
+    matrix2Frame.contentWindow.setMatrixValue("75-UNIT_MOP_FUSE_SIZE_DOWN", d.val75);
+    matrix2Frame.contentWindow.setMatrixValue("74-UNIT_MCA_FUSE_SIZE_UP", d.val74);
+    matrix2Frame.contentWindow.setMatrixValue("73-UNIT_MOP", d.val73);
+    matrix2Frame.contentWindow.setMatrixValue("72-ENCLOSURE_TYPE", d.val72);
+    matrix2Frame.contentWindow.setMatrixValue("71-NUMBER_OF_CORES", d.val71);
+    matrix2Frame.contentWindow.setMatrixValue("70-MIN_MAIN_DISCONNECT_RANGE", d.val70);
+    matrix2Frame.contentWindow.setMatrixValue("69-MOP_RANGE", d.val69);
+    matrix2Frame.contentWindow.setMatrixValue("68-POWER_DISTRIBUTION_CRITERIA", d.val68);
+    matrix2Frame.contentWindow.setMatrixValue("67-TOTAL_NUMBER_OF_FANS", d.val67);
+    matrix2Frame.contentWindow.setMatrixValue("66-PREHEATER", d.val66);
+
+
+
+    boqFrame.contentWindow.setMatrixValue("C01-CODE", d.c01cores);
+    boqFrame.contentWindow.setMatrixValue("C02-CODE", d.c02enclosuremain);
+    boqFrame.contentWindow.setMatrixValue("C03-CODE", d.c03enclosurebase);
+    boqFrame.contentWindow.setMatrixValue("C04-CODE", d.c04enclosureroof);
+    boqFrame.contentWindow.setMatrixValue("C05-CODE", d.c05enclosurehoods);
+    boqFrame.contentWindow.setMatrixValue("C06-CODE", d.c06enclosuremodulesplit);
+    boqFrame.contentWindow.setMatrixValue("C07-CODE", d.c07oadamper);
+    boqFrame.contentWindow.setMatrixValue("C08-CODE", d.c08eadamper);
+    boqFrame.contentWindow.setMatrixValue("C09-CODE", d.c09bypassdamper);
+    boqFrame.contentWindow.setMatrixValue("C10-CODE", d.c10fanssa);
+    boqFrame.contentWindow.setMatrixValue("C11-CODE", d.c11fansea);
+    boqFrame.contentWindow.setMatrixValue("C12-CODE", d.c12magnehelicgageenclosure);
+    boqFrame.contentWindow.setMatrixValue("C13-CODE", d.c13magnehelicgage);
+    boqFrame.contentWindow.setMatrixValue("C14-CODE", d.c14filtersoa1);	
+    boqFrame.contentWindow.setMatrixValue("C15-CODE", d.c15filtersoa2);
+    boqFrame.contentWindow.setMatrixValue("C16-CODE", d.c16filtersea1);
+    boqFrame.contentWindow.setMatrixValue("C17-CODE", d.c17filtersea2);
+    boqFrame.contentWindow.setMatrixValue("C18-CODE", d.c18preheater);
+    boqFrame.contentWindow.setMatrixValue("C19-CODE", d.c19postheater);
+    boqFrame.contentWindow.setMatrixValue("C20-CODE", d.c20disconnect);
+    boqFrame.contentWindow.setMatrixValue("C21-CODE", d.c21mainfuses);
+    boqFrame.contentWindow.setMatrixValue("C22-CODE", d.c22powerdistributionblock);
+    boqFrame.contentWindow.setMatrixValue("C23-CODE", d.c23fanfuseblock);
+    boqFrame.contentWindow.setMatrixValue("C24-CODE", d.c24electricalpanel);
+    boqFrame.contentWindow.setMatrixValue("C25-CODE", d.c25doorswitches);
+    boqFrame.contentWindow.setMatrixValue("C26-CODE", d.c26occupancytimer);
+    boqFrame.contentWindow.setMatrixValue("C27-CODE", d.c27defrostswitch);
+    boqFrame.contentWindow.setMatrixValue("C28-CODE", d.c28defrosttimer);
+    boqFrame.contentWindow.setMatrixValue("C29-CODE", d.c29maincontroller);
+    boqFrame.contentWindow.setMatrixValue("C30-CODE", d.c30expansionboard);
+    boqFrame.contentWindow.setMatrixValue("C31-CODE", d.c31temperaturesensor);
+    boqFrame.contentWindow.setMatrixValue("C32-CODE", d.c32tempnhumiditysensor);
+    boqFrame.contentWindow.setMatrixValue("C33-CODE", d.c33fanairflowmonitors);
+    boqFrame.contentWindow.setMatrixValue("C34-CODE", d.c34ductpressuretransducers);
+    boqFrame.contentWindow.setMatrixValue("C35-CODE", d.c35filterswitches);
+    boqFrame.contentWindow.setMatrixValue("C36-CODE", d.c36potentiometer);
+    boqFrame.contentWindow.setMatrixValue("C37-CODE", d.c37preheatcontrol);
+    boqFrame.contentWindow.setMatrixValue("C38-CODE", d.c38fancurrentswitch);
+    boqFrame.contentWindow.setMatrixValue("C39-CODE", d.c39totalmaterialcost);
+    boqFrame.contentWindow.setMatrixValue("C40-CODE", d.c40laborhourstotal);
+    boqFrame.contentWindow.setMatrixValue("C41-CODE", d.c41subtotal);
+    boqFrame.contentWindow.setMatrixValue("C42-CODE", d.c42markup);
+    boqFrame.contentWindow.setMatrixValue("C43-CODE", d.c43warranty);
+    boqFrame.contentWindow.setMatrixValue("C44-CODE", d.c44sellingprice);
+    boqFrame.contentWindow.setMatrixValue("C45-CODE", d.c45listprice);
+    boqFrame.contentWindow.setMatrixValue("C46-CODE", d.c46freight);
+
+
+    // Update BOQ after we change the codes so the totals refresh
+    if (typeof boqFrame.contentWindow.updateboq === "function") {
+      boqFrame.contentWindow.updateboq();
+    }
+
+    //const result = [str1, str2, str3].join("_");
+
+
+
+
+
+
+
+  }
+
+
+  // Wait for both iframes to load, then start sending values
+  let inputFrame = document.querySelector('iframe[src="./input.html"]');
+  let matrix1Frame = document.getElementById("matrix1Frame");
+  let matrix2Frame = document.getElementById("matrix2Frame");
+  let boqFrame = document.getElementById("boqFrame");
+
+  const framesReady = { input: false, matrix: false, boq: false };
+
+  function tryStartInterval() {
+    if (framesReady.input && framesReady.matrix && framesReady.boq) {
+      setInterval(sendInputsToMatrix, 100); // simple live update
+    }
+  }
+
+  inputFrame.addEventListener('load', function () {
+    framesReady.input = true;
+    tryStartInterval();
+  });
+
+  matrix1Frame.addEventListener('load', function () {
+    framesReady.matrix = true;
+    tryStartInterval();
+  });
+
+  boqFrame.addEventListener('load', function () {
+    framesReady.boq = true;
+    tryStartInterval();
+  });
+
+  matrix2Frame.addEventListener("load", function () {
+    setTimeout(fitPageToViewport, 50);
+  });
+
+
+
+</script>
+
+
+
+
+
+</body>
+
+</html>
