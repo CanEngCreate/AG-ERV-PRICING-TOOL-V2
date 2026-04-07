@@ -614,7 +614,7 @@ const codes = {
     "C34_281-E_20-X": { part: "ERROR_7", qty: 1 },
     "C34_281-F_20-F": { part: "FILTER_SW", qty: 2 },
     "C34_281-F_20-X": { part: "ERROR_7", qty: 1 },
-    "C35_281-B_282-C": { part: "MIN_POT-ASM", qty: 1 },
+    "C35_281-B_282-C": { part: "MIN_POT_ASM", qty: 1 },
     "C35_281-B_282-X": { part: "-", qty: 0 },
     "C35_281-E_282-C": { part: "ERROR_8", qty: 1 },
     "C35_281-E_282-X": { part: "-", qty: 0 },
