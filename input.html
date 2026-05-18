@@ -33,17 +33,23 @@
   <!-- SERIES -->
   <label>Series</label>
   <select id="series">
-    <option value="123-XXX" data-cores="0">-- Select --</option>
-    <option value="123-M01" data-cores="1">M01</option>
-    <option value="123-M02" data-cores="2">M02</option>
-    <option value="123-M03" data-cores="3">M03</option>
-    <option value="123-M04" data-cores="4">M04</option>
-    <option value="123-M05" data-cores="5">M05</option>
-    <option value="123-M06" data-cores="6">M06</option>
-    <option value="123-M07" data-cores="7">M07</option>
-    <option value="123-M08" data-cores="8">M08</option>
-    <option value="123-M09" data-cores="9">M09</option>
-    <option value="123-M10" data-cores="10">M10</option>
+    <option value="123-XXX">-- Select --</option>
+    <option value="123-M01">M01</option>
+    <option value="123-M02">M02</option>
+    <option value="123-M03">M03</option>
+    <option value="123-M04">M04</option>
+    <option value="123-M05">M05</option>
+    <option value="123-M06">M06</option>
+    <option value="123-M07">M07</option>
+    <option value="123-M08">M08</option>
+    <option value="123-M09">M09</option>
+    <option value="123-M10">M10</option>
+    <option value="123-G01">G01</option>
+    <option value="123-G02">G02</option>
+    <option value="123-G03">G03</option>
+    <option value="123-G04">G04</option>
+    <option value="123-G05">G05</option>
+    <option value="123-G06">G06</option>
   </select>
   <label class="label-space" id="seriescode">123-XXX</label>
   <br><br>
@@ -72,22 +78,24 @@
   <!-- OA DAMPER -->
   <label>OA Damper</label>
   <select id="oadamper">
+    <option value="15-X">-- Select --</option>
     <option value="15-N">None</option>
     <option value="15-A">Insulated</option>
     <option value="15-F">Non-Insulated</option>
   </select>
-  <label class="label-space" id="oadampercode">15-N</label>
+  <label class="label-space" id="oadampercode">15-X</label>
   <br><br>
 
   <!-- EA DAMPER -->
   <label>EA Damper</label>
   <select id="eadamper">
+    <option value="16-X">-- Select --</option>
     <option value="16-N">None</option>
     <option value="16-A">Insulated</option>
     <option value="16-F">Non-Insulated</option>
     <option value="16-C">Backdraft</option>
   </select>
-  <label class="label-space" id="eadampercode">16-N</label>
+  <label class="label-space" id="eadampercode">16-X</label>
   <br><br>
 
   <!-- BYPASS DAMPER -->
@@ -103,7 +111,6 @@
   <!-- FILTERS -->
   <label>Filters</label>
   <select id="filters">
-    <option value="243-X">-- Select --</option>
     <option value="243-X">OA MERV8 / EA MERV8</option>
     <option value="243-M">OA MERV13 / EA MERV13</option>
     <option value="243-P">OA MERV13 / EA MERV8</option>
@@ -142,11 +149,12 @@
   <!-- MAINDISCONNECT -->
   <label>Main Disconnect</label>
   <select id="maindisconnect">
+    <option value="17-X">-- Select --</option>
     <option value="17-N">None </option>
     <option value="17-A">Non-Fused</option>
     <option value="17-B">Fused</option>
   </select>
-  <label class="label-space" id="maindisconnectcode">17-N</label>
+  <label class="label-space" id="maindisconnectcode">17-X</label>
   <br><br>
   </select>
 
@@ -358,6 +366,7 @@
     let e15oadampercode = "15-X";
     let e16eadampercode = "16-X";
     let e17optiondisconnectcode = "17-X";
+    let e182optionfrostprotectionbypasscode = "182-X";
     let e19optiontimercode = "19-X";
     let e21optionmagnehilicgaugescode = "21-X";
     let e241optionmodulesplitcode = "241-X";
@@ -569,18 +578,22 @@
       m2cores = m123model.charAt(1);
       m3cores = m123model.charAt(2);
       d71numberofcores = Number(m2cores + m3cores);
-      //document.getElementById("testcode").textContent = matrixval1 + matrixval2 + matrixval3;
-
       populatepreheater(e123modelcode);
       populatepostheater(e123modelcode);
+      updatepreheater();
+      updatepostheater();
       updateenclosuretype()
     }
 
     function updatelocation() {
       e4locationcode = ervlocation.value;
       document.getElementById("ervlocationcode").textContent = e4locationcode;
+      if (e4locationcode == "4-i") {
+        baserail.checked = false;
+      }
       updatebaserail();
       m4location = e4locationcode.split("-")[1];
+
     }
 
     function updatebaserail() {
@@ -638,6 +651,7 @@
     }
 
     function updatebypassdamper() {
+
       e244optionbypasscode = bypassdamper.checked ? "244-R" : "244-X";
       document.getElementById("bypassdampercode").textContent = e244optionbypasscode;
       populatedefrostbypass();
@@ -907,11 +921,11 @@
         opts = [{ value: "182-X", text: "None" }];
 
         if (controlsVal === "281-E" || controlsVal === "281-F") {
-          opts.push({ value: "182-D:O", text: "On/Off" });
+          opts.push({ value: "182-D_O", text: "On/Off" });
         }
 
         if (controlsVal === "281-F") {
-          opts.push({ value: "182-D:M", text: "Modulating" });
+          opts.push({ value: "182-D_M", text: "Modulating" });
         }
       }
 
@@ -940,8 +954,9 @@
 
 
     function updatedefrostbypass() {
-      document.getElementById("defrostbypasscode").textContent = defrostbypass.value;
-      m182optionfrostprotectionbypass = defrostbypass.value.split("-")[1];
+      e182optionfrostprotectionbypasscode = defrostbypass.value;
+      document.getElementById("defrostbypasscode").textContent = e182optionfrostprotectionbypasscode;
+      m182optionfrostprotectionbypass = e182optionfrostprotectionbypasscode.split("-")[1];
     }
 
     function updatesupplyductdpt() {
@@ -1110,10 +1125,11 @@
     }
 
     function updateenclosuretype() {
+
       if (bypassdamper.checked) {
         const num = d71numberofcores + 1;
         const padded = String(num).padStart(2, "0");
-        m72enclosuretype = "M" + padded;
+        m72enclosuretype = m1series + padded;
       } else {
         m72enclosuretype = m123model;
       }
@@ -1129,7 +1145,7 @@
       c06enclosuremodulesplit = ["C06", e72enclosuretypecode, e241optionmodulesplitcode].join("_");
       c07oadamper = ["C07", e123modelcode, e15oadampercode].join("_");
       c08eadamper = ["C08", e123modelcode, e16eadampercode].join("_");
-      c09bypassdamper = ["C09", e244optionbypasscode, e281controlscode].join("_");
+      c09bypassdamper = ["C09", e244optionbypasscode, e281controlscode, e182optionfrostprotectionbypasscode].join("_");
       c10fanssa = ["C10", e123modelcode, e8voltagecode].join("_");
       c11fansea = ["C11", e123modelcode, e8voltagecode].join("_");
       c12magnehelicgageenclosure = ["C12", e21optionmagnehilicgaugescode].join("_");

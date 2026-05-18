@@ -1,6 +1,6 @@
 const fanflas = {
 
-      "123-XXX": {
+"123-XXX": {
     "8-X": { FLA: 0, TOTALFLA: 0 },
     "8-B": { FLA: 0, TOTALFLA: 0 },
     "8-C": { FLA: 0, TOTALFLA: 0 },
@@ -86,6 +86,55 @@ const fanflas = {
     "8-C": { FLA: 4.3, TOTALFLA: 25.8 },
     "8-E": { FLA: 5.9, TOTALFLA: 35.4 },
     "8-F": { FLA: 4.2, TOTALFLA: 25.2 }
-  }
+  },
+
+  "123-G01": {
+    "8-X": { FLA: 0, TOTALFLA: 0 },
+    "8-B": { FLA: 5.42, TOTALFLA: 10.84 },
+    "8-C": { FLA: 2.6, TOTALFLA: 5.2 },
+    "8-E": { FLA: 1.88, TOTALFLA: 3.76 },
+    "8-F": { FLA: 9999, TOTALFLA: 19998 }
+  },
+
+  "123-G02": {
+    "8-X": { FLA: 0, TOTALFLA: 0 },
+    "8-B": { FLA: 5.42, TOTALFLA: 10.84 },
+    "8-C": { FLA: 4.75, TOTALFLA: 9.5 },
+    "8-E": { FLA: 3, TOTALFLA: 6 },
+    "8-F": { FLA: 4.2, TOTALFLA: 8.4 }
+  },
+
+  "123-G03": {
+    "8-X": { FLA: 0, TOTALFLA: 0 },
+    "8-B": { FLA: 5.42, TOTALFLA: 10.84 },
+    "8-C": { FLA: 7.15, TOTALFLA: 14.3 },
+    "8-E": { FLA: 5.9, TOTALFLA: 11.8 },
+    "8-F": { FLA: 4.2, TOTALFLA: 8.4 }
+  },
+
+  "123-G04": {
+    "8-X": { FLA: 0, TOTALFLA: 0 },
+    "8-B": { FLA: 9999, TOTALFLA: 19998 },
+    "8-C": { FLA: 7.15, TOTALFLA: 14.3 },
+    "8-E": { FLA: 5.9, TOTALFLA: 11.8 },
+    "8-F": { FLA: 4.2, TOTALFLA: 8.4 }
+  },
+
+  "123-G05": {
+    "8-X": { FLA: 0, TOTALFLA: 0 },
+    "8-B": { FLA: 9999, TOTALFLA: 19998 },
+    "8-C": { FLA: 6.5, TOTALFLA: 13 },
+    "8-E": { FLA: 6.05, TOTALFLA: 12.1 },
+    "8-F": { FLA: 4.2, TOTALFLA: 8.4 }
+  },
+
+  "123-G06": {
+    "8-X": { FLA: 0, TOTALFLA: 0 },
+    "8-B": { FLA: 9999, TOTALFLA: 19998 },
+    "8-C": { FLA: 7, TOTALFLA: 14 },
+    "8-E": { FLA: 5.9, TOTALFLA: 11.8 },
+    "8-F": { FLA: 4.2, TOTALFLA: 8.4 }
+  },
+
 
 };

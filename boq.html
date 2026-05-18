@@ -33,7 +33,7 @@
 
 <body>
 
-  <table>
+  <table id="boqtable">
     <thead>
       <tr>
         <th colspan="11">BILL OF QUANTITIES</th>
@@ -64,6 +64,9 @@
     let warrrantyprice = 0
     let sellingprice = 0
     let listprice = 0
+    let freightprice = 0
+    let quoteprice = 0
+
 
     const rows = [
       { id: "C01", name: "CORES" },
@@ -99,11 +102,11 @@
       { id: "C31", name: "FAN AIRFLOW MONITORS" },
       { id: "C32", name: "DUCT PRESSURE TRANSDUCER - SUPPLY" },
       { id: "C33", name: "DUCT PRESSURE TRANSDUCER - RETURN" },
-      { id: "C34", name: "FILTER SWITCHES"  },
+      { id: "C34", name: "FILTER SWITCHES" },
       { id: "C35", name: "POTENTIOMETER" },
-      { id: "C36", name: "OCCUPANCY TIMER"  },
+      { id: "C36", name: "OCCUPANCY TIMER" },
       { id: "C37", name: "DEFROST SWITCH - STOP SUPPLY FAN" },
-      { id: "C38", name: "PREHEAT CONTROL"},
+      { id: "C38", name: "PREHEAT CONTROL" },
       { id: "C39", name: "TOTAL MATERIAL COST" },
       { id: "C40", name: "LABOR HOURS TOTAL" },
       { id: "C41", name: "SUBTOTAL" },
@@ -112,6 +115,7 @@
       { id: "C44", name: "SELLING PRICE" },
       { id: "C45", name: "LIST PRICE" },
       { id: "C46", name: "FREIGHT" },
+      { id: "C47", name: "QUOTE PRICE" },
     ];
 
     const tbody = document.getElementById("table-body");
@@ -149,8 +153,8 @@
       });
     }
 
-    mergeCellsHorizontal("C39-CODE", ["C39-PART", "C39-DESCRIPTION", "C39-UNIT_PRICE", "C39-UNIT_WEIGHT", "C39-UNIT_HOURS", "C39-QTY"]);
-    mergeCellsHorizontal("C39-TOTAL_WEIGHT", ["C39-TOTAL_HOURS"]);
+    //mergeCellsHorizontal("C39-CODE", ["C39-PART", "C39-DESCRIPTION", "C39-UNIT_PRICE", "C39-UNIT_WEIGHT", "C39-UNIT_HOURS", "C39-QTY"]);
+    //mergeCellsHorizontal("C39-TOTAL_WEIGHT", ["C39-TOTAL_HOURS"]);
     //mergeCellsHorizontal("C40-PART", ["C40-DESCRIPTION"]);
 
 
@@ -162,14 +166,15 @@
         const prefix = "C" + i.toString().padStart(2, "0"); // C01, C02, ... C46
         updateRow(prefix);
       };
-      sumHours()
-      sumPrices()
+      updatelabor()
+      updatetotalmaterialcost()
       updatesubtotal()
       updatemarkupprice()
       updatewarranty()
       updatesellingprice()
       updatelistprice()
       updatefreightprice()
+      updatequoteprice()
     }
 
     function updateRow(prefix) {
@@ -182,27 +187,28 @@
         code = code.split(":")[0];
         qty = Number(originalCode.split(":")[1]);
       }
-if(prefix === "C23" || prefix === "C29"){
-  let fansaqty = Number(document.getElementById("C10-QTY").textContent)
-  let faneaqty = Number(document.getElementById("C11-QTY").textContent)
-qty = fansaqty + faneaqty
-}
+      if (prefix === "C23" || prefix === "C29") {
+        let fansaqty = Number(document.getElementById("C10-QTY").textContent)
+        let faneaqty = Number(document.getElementById("C11-QTY").textContent)
+        qty = fansaqty + faneaqty
+      }
 
 
       part = codes[code]?.part ?? "-";
-
+      const partInfo = parts[part];
 
       let description, unitPrice, unitWeight, unitHours;
-      if (part === "-") {
+      if (part === "-" || !partInfo) {
+        part = "-";
         description = "-";
         unitPrice = 0;
         unitWeight = 0;
         unitHours = 0;
       } else {
-        description = parts[part].description;
-        unitPrice = Number(parts[part].price);
-        unitWeight = Number(parts[part].weight);
-        unitHours = Number(parts[part].hours);
+        description = partInfo.description;
+        unitPrice = Number(partInfo.price);
+        unitWeight = Number(partInfo.weight);
+        unitHours = Number(partInfo.hours);
       }
 
       document.getElementById(prefix + "-PART").textContent = part;
@@ -221,7 +227,7 @@ qty = fansaqty + faneaqty
     }
 
 
-    function sumPrices() {
+    function updatetotalmaterialcost() {
       let total = 0;
 
       for (let i = 1; i <= 38; i++) {
@@ -239,8 +245,8 @@ qty = fansaqty + faneaqty
       document.getElementById("C39-TOTAL_PRICE").textContent = total.toFixed(2);
     }
 
-    function sumHours() {
-      let total = 0;
+    function updatelabor() {
+      let totalhours = 0;
 
       for (let i = 1; i <= 38; i++) {
         const id = `C${String(i).padStart(2, '0')}-TOTAL_HOURS`;
@@ -249,16 +255,27 @@ qty = fansaqty + faneaqty
         if (cell && cell.textContent.trim() !== "") {
           const value = parseFloat(cell.textContent);
           if (!isNaN(value)) {
-            total += value;
+            totalhours += value;
           }
         }
       }
 
       //document.getElementById("C40-QTY").textContent = total.toFixed(2);
-      let e40laborhourscode = "C40:" + total.toFixed(2);
-      document.getElementById("C40-CODE").textContent = e40laborhourscode
+      let e40laborhourscode = "C40:" + totalhours.toFixed(2);
+
       //updateRow("C40")
-      updateRow("C40")
+      //updateRow("C40")
+      let part = "LABOR"
+      let laborprice = getunitprice(part);
+
+
+      document.getElementById("C40-CODE").textContent = e40laborhourscode
+      document.getElementById("C40-PART").textContent = part;
+      document.getElementById("C40-DESCRIPTION").textContent = getdescription(part);
+      document.getElementById("C40-UNIT_PRICE").textContent = laborprice.toFixed(2);
+      document.getElementById("C40-QTY").textContent = totalhours.toFixed(2);
+      document.getElementById("C40-TOTAL_PRICE").textContent = (laborprice * totalhours).toFixed(2);
+
     }
 
     function updatesubtotal() {
@@ -296,14 +313,14 @@ qty = fansaqty + faneaqty
 
     function updatesellingprice() {
       sellingprice = warrrantyprice + subtotal + markup;
-      document.getElementById("C44-DESCRIPTION").textContent = "(SUBTOTAL + MARKUP + WARRANTY)";
+      document.getElementById("C44-DESCRIPTION").textContent = "SUBTOTAL + MARKUP + WARRANTY";
       document.getElementById("C44-UNIT_PRICE").textContent = "";
       document.getElementById("C44-QTY").textContent = "";
       document.getElementById("C44-TOTAL_PRICE").textContent = sellingprice.toFixed(2);
     }
-        function updatelistprice() {
+    function updatelistprice() {
       listprice = sellingprice / 0.6;
-      document.getElementById("C45-DESCRIPTION").textContent = "(SELLING PRICE / 0.6)";
+      document.getElementById("C45-DESCRIPTION").textContent = "SELLING PRICE / 0.6";
       document.getElementById("C45-UNIT_PRICE").textContent = "";
       document.getElementById("C45-QTY").textContent = "";
       document.getElementById("C45-TOTAL_PRICE").textContent = listprice.toFixed(2);
@@ -314,28 +331,36 @@ qty = fansaqty + faneaqty
       let part = getpart(code);
       let description = getdescription(part);
       let qty = getunitprice(part);
-
+      freightprice = listprice * qty;
       document.getElementById("C46-PART").textContent = part;
       document.getElementById("C46-DESCRIPTION").textContent = description;
       document.getElementById("C46-UNIT_PRICE").textContent = listprice.toFixed(2);
       document.getElementById("C46-QTY").textContent = qty;
-      document.getElementById("C46-TOTAL_PRICE").textContent = (listprice * qty).toFixed(2);
+      document.getElementById("C46-TOTAL_PRICE").textContent = freightprice.toFixed(2);
     }
 
-    function getcode(prefix){
+    function updatequoteprice() {
+      quoteprice = sellingprice + freightprice;
+      document.getElementById("C47-DESCRIPTION").textContent = "SELLING PRICE + FREIGHT";
+      document.getElementById("C47-UNIT_PRICE").textContent = "";
+      document.getElementById("C47-QTY").textContent = "";
+      document.getElementById("C47-TOTAL_PRICE").textContent = quoteprice.toFixed(2);
+    }
+
+    function getcode(prefix) {
       let code = document.getElementById(prefix + "-CODE").textContent;
       return code
     }
 
-    function getpart(code){       
+    function getpart(code) {
       return codes[code]?.part ?? "-";
     }
 
-    function getdescription(part){
-      return parts[part]?.description ?? "-";      
+    function getdescription(part) {
+      return parts[part]?.description ?? "-";
     }
 
-    function getunitprice(part){
+    function getunitprice(part) {
       return Number(parts[part]?.price ?? 0);
     }
 
@@ -355,6 +380,55 @@ qty = fansaqty + faneaqty
 
     // expose function to parent page
     window.setMatrixValue = setMatrixValue;
+
+
+
+
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+     // hidecodecolumn();
+      cleanrows();
+    });
+
+    function hidecodecolumn() {
+      const col = 1; // zero-based index (2 = 3rd column)
+
+      document.querySelectorAll("#boqtable tr").forEach(row => {
+        if (row.cells[col]) {
+          row.cells[col].style.display = "none";
+        }
+      });
+    }
+
+
+    function cleanandformatrow(rowindex) {
+      let row = document.querySelectorAll("#boqtable tr")[rowindex];
+      for (let i = 0; i <= 9; i++) { // cells 1 to 9
+
+        if (row.cells[i]) {
+
+          row.cells[i].style.borderRight = "none";
+
+          if (row.cells[i + 1]) {
+            row.cells[i + 1].style.borderLeft = "none";
+          }
+        }
+      }
+      row.style.fontWeight = "bold";
+      row.style.fontSize = "12px";
+    }
+
+    function cleanrows() {
+      cleanandformatrow(40) //mat row      
+      cleanandformatrow(42) //subtotal row
+      cleanandformatrow(45) //selling price row
+      cleanandformatrow(46) //list price row
+      cleanandformatrow(48) //quote price row
+    }
+
+
+
 
 
 

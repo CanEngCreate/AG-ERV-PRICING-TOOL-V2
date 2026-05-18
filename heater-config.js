@@ -55,7 +55,38 @@ const preheaters = {
     { value: "25-N", text: "None", datacapacity: 0 },
     { value: "25-B_L", text: "Low (24kW)", datacapacity: 24 },
     { value: "25-B_H", text: "High (48kW)", datacapacity: 48 },
+  ],
+  "123-G01": [
+    { value: "25-N", text: "None", datacapacity: 0 },
+    { value: "25-B_L", text: "Low (2kW)", datacapacity: 2 },
+    { value: "25-B_H", text: "High (4kW)", datacapacity: 4 },
+  ],  
+  "123-G02": [
+    { value: "25-N", text: "None", datacapacity: 0 },
+    { value: "25-B_L", text: "Low (4kW)", datacapacity: 4 },
+    { value: "25-B_H", text: "High (8kW)", datacapacity: 8 },
+  ],
+  "123-G03": [
+    { value: "25-N", text: "None", datacapacity: 0 },
+    { value: "25-B_L", text: "Low (6kW)", datacapacity: 6 },
+    { value: "25-B_H", text: "High (12kW)", datacapacity: 12 },
+  ],
+    "123-G04": [
+    { value: "25-N", text: "None", datacapacity: 0 },
+    { value: "25-B_L", text: "Low (8kW)", datacapacity: 8 },
+    { value: "25-B_H", text: "High (16kW)", datacapacity: 16 },
+  ],
+    "123-G05": [
+    { value: "25-N", text: "None", datacapacity: 0 },
+    { value: "25-B_L", text: "Low (10kW)", datacapacity: 10 },
+    { value: "25-B_H", text: "High (19kW)", datacapacity: 19 },
+  ],
+   "123-G06": [
+    { value: "25-N", text: "None", datacapacity: 0 },
+    { value: "25-B_L", text: "Low (12kW)", datacapacity: 12 },
+    { value: "25-B_H", text: "High (23kW)", datacapacity: 23 },
   ]
+
 };
 
 const postheaters = {
@@ -113,5 +144,35 @@ const postheaters = {
     { value: "26-N", text: "None", datacapacity: 0 },
     { value: "26-B_L", text: "Low (60kW)", datacapacity: 60 },
     { value: "26-B_H", text: "High (84kW) **OVER 68kW UNIT NOT ETL LISTED**", datacapacity: 84 },
+  ],
+  "123-G01": [
+    { value: "26-N", text: "None", datacapacity: 0 },
+    { value: "26-B_L", text: "Low (5kW)", datacapacity: 5 },
+    { value: "26-B_H", text: "High (7kW)", datacapacity: 7 },
+  ],  
+  "123-G02": [
+    { value: "26-N", text: "None", datacapacity: 0 },
+    { value: "26-B_L", text: "Low (10kW)", datacapacity: 10 },
+    { value: "26-B_H", text: "High (14kW)", datacapacity: 14 },
+  ],
+  "123-G03": [
+    { value: "26-N", text: "None", datacapacity: 0 },
+    { value: "26-B_L", text: "Low (15kW)", datacapacity: 15 },
+    { value: "26-B_H", text: "High (20kW)", datacapacity: 20 },
+  ],
+    "123-G04": [
+    { value: "26-N", text: "None", datacapacity: 0 },
+    { value: "26-B_L", text: "Low (19kW)", datacapacity: 19 },
+    { value: "26-B_H", text: "High (27kW)", datacapacity: 27 },
+  ],
+    "123-G05": [
+    { value: "26-N", text: "None", datacapacity: 0 },
+    { value: "26-B_L", text: "Low (24kW)", datacapacity: 24 },
+    { value: "26-B_H", text: "High (34kW)", datacapacity: 34 },
+  ],
+   "123-G06": [
+    { value: "26-N", text: "None", datacapacity: 0 },
+    { value: "26-B_L", text: "Low (29kW)", datacapacity: 29 },
+    { value: "26-B_H", text: "High (40kW)", datacapacity: 40 },
   ]
 };
