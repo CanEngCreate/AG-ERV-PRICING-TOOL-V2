@@ -102,6 +102,16 @@
   <script type="module">
     // const supabase = window.supabase;
 
+    // Helper function to convert UTC to local time
+    function convertUTCToLocal(utcString) {
+      if (!utcString) return "";
+      const date = new Date(utcString);
+      // Subtract 4 hours (appears stored as UTC+4, needs to be local -4)
+      const offset = -4 * 60 * 60 * 1000; // -4 hours in milliseconds
+      const adjustedDate = new Date(date.getTime() + offset);
+      return adjustedDate.toLocaleString();
+    }
+
     // -------------------------
     // LOAD PROJECTS
     // -------------------------
@@ -130,8 +140,8 @@
         <td> <a href="form.html?id=${p.id}"> ${p.project_name}  </a></td>
         <td>${json.representative ?? ""}</td>
         <!-- <td>${json.total ?? 0}</td> -->
-        <td>${new Date(p.created_at).toLocaleString()}</td>
-        <td>${new Date(p.updated_at).toLocaleString()}</td>
+        <td>${convertUTCToLocal(p.created_at)}</td>
+        <td>${convertUTCToLocal(p.updated_at)}</td>
         <td><pre>${JSON.stringify(json, null, 2)}</pre></td>
       `;
 
@@ -140,6 +150,7 @@
 
       // ensure the Raw JSON column is hidden after rows are rendered
       hideTableColumn("table", 0);
+      hideTableColumn("table", 2);
       hideTableColumn("table", 4);
       hideTableColumn("table", 5);
     }
@@ -189,6 +200,7 @@
 
       // Hide the 'Raw JSON' column (index 5) in the projects table
       hideTableColumn("table", 0);
+      hideTableColumn("table", 2);
       hideTableColumn("table", 4);
       hideTableColumn("table", 5);
 
