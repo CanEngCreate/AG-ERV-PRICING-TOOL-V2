@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Projects Dashboard</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+
+    .box {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0 12px 0;
+    }
+
+    button {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #eee;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+  </style>
+
+  <script type="module" src="databaseconfig.js"></script>
+</head>
+
+<body>
+
+  <h1>ERV Pricing Tool v2 - Dashboard</h1>
+
+  <!-- CREATE -->
+  <div class="box">
+    <h3>Create Project</h3>
+
+    <label>Project Name</label>
+    <input id="projectName" placeholder="Enter project name" />
+
+    <label>Representative</label>
+    <input id="representative" placeholder="Enter representative" />
+
+    <!-- <label>Total</label>
+    <input id="total" type="number" value="0" /> -->
+
+    <button onclick="addProject()">Add Project</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="box">
+    <h3>Projects</h3>
+    <button onclick="loadProjects()">Refresh</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID </th>
+          <th>Name</th>
+          <th>Representative</th>
+          <!-- <th>Total</th> -->
+          <th>Created</th>
+          <th>Updated</th>
+          <th>Raw JSON</th>
+        </tr>
+      </thead>
+
+      <tbody id="projectsTable"></tbody>
+    </table>
+  </div>
+
+  <script type="module">
+    // const supabase = window.supabase;
+
+    // -------------------------
+    // LOAD PROJECTS
+    // -------------------------
+    async function loadProjects() {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error(error);
+        alert("Error loading projects");
+        return;
+      }
+
+      const table = document.getElementById("projectsTable");
+      table.innerHTML = "";
+
+      data.forEach(p => {
+        const json = p.project_data || {};
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+        <td>${p.id}</td>
+        <td> <a href="form.html?id=${p.id}"> ${p.project_name}  </a></td>
+        <td>${json.representative ?? ""}</td>
+        <!-- <td>${json.total ?? 0}</td> -->
+        <td>${new Date(p.created_at).toLocaleString()}</td>
+        <td>${new Date(p.updated_at).toLocaleString()}</td>
+        <td><pre>${JSON.stringify(json, null, 2)}</pre></td>
+      `;
+
+        table.appendChild(row);
+      });
+
+      // ensure the Raw JSON column is hidden after rows are rendered
+      hideTableColumn("table", 0);
+      hideTableColumn("table", 4);
+      hideTableColumn("table", 5);
+    }
+
+    // -------------------------
+    // ADD PROJECT
+    // -------------------------
+    async function addProject() {
+      const name = document.getElementById("projectName").value;
+      const rep = document.getElementById("representative").value;
+      //const total = Number(document.getElementById("total").value || 0);
+
+      const projectData = {
+        representative: rep,
+        //total: total
+      };
+
+      const { error } = await supabase
+        .from('projects')
+        .insert([
+          {
+            project_name: name,
+            project_data: projectData
+          }
+        ]);
+
+      if (error) {
+        console.error(error);
+        alert("Insert failed");
+        return;
+      }
+
+      document.getElementById("projectName").value = "";
+      document.getElementById("representative").value = "";
+      //document.getElementById("total").value = 0;
+
+      loadProjects();
+    }
+
+    // expose
+    window.loadProjects = loadProjects;
+    window.addProject = addProject;
+
+    loadProjects();
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+      // Hide the 'Raw JSON' column (index 5) in the projects table
+      hideTableColumn("table", 0);
+      hideTableColumn("table", 4);
+      hideTableColumn("table", 5);
+
+    });
+
+    function hideTableColumn(tableSelector, colIndex) {
+      const table = document.querySelector(tableSelector);
+      if (!table) return;
+      [...table.querySelectorAll("tr")].forEach(row => {
+        if (row.cells[colIndex]) {
+          row.cells[colIndex].style.display = "none";
+        }
+      });
+    }
+
+  </script>
+
+</body>
+
+</html>

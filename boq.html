@@ -28,7 +28,7 @@
     }
   </style>
 
-
+  <script src="bus.js"></script>
 </head>
 
 <body>
@@ -42,8 +42,8 @@
       <th>CODE</th>
       <th>PART</th>
       <th>DESCRIPTION</th>
-      <th>UNIT PRICE</th>
-      <th>UNIT WEIGHT</th>
+      <th>PRICE EA</th>
+      <th>WEIGHT EA</th>
       <th>UNIT HOURS</th>
       <th>QTY</th>
       <th>TOTAL PRICE</th>
@@ -74,23 +74,23 @@
       { id: "C03", name: "ENCLOSURE-BASE" },
       { id: "C04", name: "ENCLOSURE-ROOF" },
       { id: "C05", name: "ENCLOSURE-HOODS" },
-      { id: "C06", name: "ENCLOSURE-MODULE SPLIT" },
-      { id: "C07", name: "OA DAMPER" },
-      { id: "C08", name: "EA DAMPER" },
-      { id: "C09", name: "BYPASS DAMPER" },
-      { id: "C10", name: "FANS - SA" },
-      { id: "C11", name: "FANS - EA" },
-      { id: "C12", name: "MAGNEHELIC GAGE ENCLOSURE" },
-      { id: "C13", name: "MAGNEHELIC GAGE" },
-      { id: "C14", name: "FILTERS - OA #1" },
-      { id: "C15", name: "FILTERS - OA #2" },
-      { id: "C16", name: "FILTERS - EA #1" },
-      { id: "C17", name: "FILTERS - EA #2" },
-      { id: "C18", name: "PRE-HEATER" },
-      { id: "C19", name: "POST-HEATER" },
+      { id: "C06", name: "ENCLOSURE-SPLIT" },
+      { id: "C07", name: "DAMPER-OA" },
+      { id: "C08", name: "DAMPER-EA" },
+      { id: "C09", name: "DAMPER-BY" },
+      { id: "C10", name: "FANS-SA" },
+      { id: "C11", name: "FANS-EA" },
+      { id: "C12", name: "MAGNEHELIC-GAGE ENCLOSURE" },
+      { id: "C13", name: "MAGNEHELIC-GAGE" },
+      { id: "C14", name: "FILTERS OA#1" },
+      { id: "C15", name: "FILTERS OA#2" },
+      { id: "C16", name: "FILTERS EA#1" },
+      { id: "C17", name: "FILTERS EA#2" },
+      { id: "C18", name: "HEATER-PRE" },
+      { id: "C19", name: "HEATER-POST" },
       { id: "C20", name: "DISCONNECT" },
       { id: "C21", name: "MAIN FUSES" },
-      { id: "C22", name: "POWER DISTRIBUTION BLOCK" },
+      { id: "C22", name: "POWER DIST. BLOCK" },
       { id: "C23", name: "FAN FUSE BLOCK" },
       { id: "C24", name: "ELECTRICAL PANEL" },
       { id: "C25", name: "DOOR SWITCHES" },
@@ -100,13 +100,13 @@
       { id: "C29", name: "FAN CURRENT SWITCH" },
       { id: "C30", name: "EXPANSION BOARD" },
       { id: "C31", name: "FAN AIRFLOW MONITORS" },
-      { id: "C32", name: "DUCT PRESSURE TRANSDUCER - SUPPLY" },
-      { id: "C33", name: "DUCT PRESSURE TRANSDUCER - RETURN" },
+      { id: "C32", name: "DPT-SUPPLY" },
+      { id: "C33", name: "DPT-RETURN" },
       { id: "C34", name: "FILTER SWITCHES" },
       { id: "C35", name: "POTENTIOMETER" },
       { id: "C36", name: "OCCUPANCY TIMER" },
-      { id: "C37", name: "DEFROST SWITCH - STOP SUPPLY FAN" },
-      { id: "C38", name: "PREHEAT CONTROL" },
+      { id: "C37", name: "DEFR. SWITCH-STOP SA FANS" },
+      { id: "C38", name: "CONTROL-PREHEATER" },
       { id: "C39", name: "TOTAL MATERIAL COST" },
       { id: "C40", name: "LABOR HOURS TOTAL" },
       { id: "C41", name: "SUBTOTAL" },
@@ -175,7 +175,11 @@
       updatelistprice()
       updatefreightprice()
       updatequoteprice()
+      hidedeadrows()
     }
+
+
+
 
     function updateRow(prefix) {
       let code = document.getElementById(prefix + "-CODE").textContent;
@@ -387,18 +391,40 @@
 
 
     document.addEventListener("DOMContentLoaded", () => {
-     // hidecodecolumn();
+      hidecolumn(1); // Hide CODE column
+      hidecolumn(2); // Hide PART column
+      hidecolumn(5); // Hide UNIT WEIGHT column
+      hidecolumn(9); // Hide TOTAL WEIGHT column
       cleanrows();
     });
 
-    function hidecodecolumn() {
-      const col = 1; // zero-based index (2 = 3rd column)
 
+
+    function hidecolumn(colIndex) {
       document.querySelectorAll("#boqtable tr").forEach(row => {
-        if (row.cells[col]) {
-          row.cells[col].style.display = "none";
+        if (row.cells[colIndex]) {
+          row.cells[colIndex].style.display = "none";
         }
       });
+    }
+
+    function hideRow(rowIndex) {
+      document.querySelectorAll("#boqtable tr")[rowIndex].style.display = "none";
+    }
+
+    function hideRowsByCellValue(colIndex, value) {
+      document.querySelectorAll("#boqtable tr").forEach(row => {
+        if (row.cells[colIndex]) {
+          row.style.display = ""; // reset row visibility before re-checking
+          if (row.cells[colIndex].innerText.trim() === value) {
+            row.style.display = "none";
+          }
+        }
+      });
+    }
+
+    function hidedeadrows() {
+      hideRowsByCellValue(2, "-");
     }
 
 
@@ -426,7 +452,6 @@
       cleanandformatrow(46) //list price row
       cleanandformatrow(48) //quote price row
     }
-
 
 
 
